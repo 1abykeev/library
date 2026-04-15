@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap");
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background: #fafaf9;
+  color: #151412;
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-ink-900 text-white hover:bg-ink-600;
+  }
+  .btn-accent {
+    @apply btn bg-accent text-white hover:brightness-95;
+  }
+  .btn-ghost {
+    @apply btn text-ink-900 hover:bg-ink-100;
+  }
+  .btn-outline {
+    @apply btn border border-ink-200 text-ink-900 hover:bg-ink-100;
+  }
+  .input {
+    @apply w-full rounded-xl border border-ink-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-ink-900 focus:ring-2 focus:ring-ink-900/10;
+  }
+  .card {
+    @apply rounded-2xl bg-white shadow-card;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-green { @apply badge bg-emerald-50 text-emerald-700; }
+  .badge-red   { @apply badge bg-rose-50 text-rose-700; }
+  .badge-gray  { @apply badge bg-ink-100 text-ink-600; }
+}
