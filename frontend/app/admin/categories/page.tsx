@@ -70,18 +70,32 @@ function Content() {
         </div>
       )}
       <ul className="mt-8 divide-y divide-ink-100 rounded-2xl bg-white shadow-card">
-        {items.map((c) => (
-          <li key={c.id} className="flex items-center justify-between px-4 py-3">
-            <div>
-              <div className="font-medium">{c.name}</div>
-              <div className="text-xs text-ink-600">{c.slug}</div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => rename(c)} className="btn-outline">Переименовать</button>
-              <button onClick={() => remove(c.id)} className="btn-ghost text-rose-700">Удалить</button>
-            </div>
-          </li>
-        ))}
+        {items.map((c) => {
+          const locked = c.slug === "free-books";
+          return (
+            <li key={c.id} className="flex items-center justify-between px-4 py-3">
+              <div>
+                <div className="font-medium">
+                  {c.name}
+                  {locked && <span className="badge-gray ml-2">системная</span>}
+                </div>
+                <div className="text-xs text-ink-600">{c.slug}</div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => rename(c)} disabled={locked} className="btn-outline">
+                  Переименовать
+                </button>
+                <button
+                  onClick={() => remove(c.id)}
+                  disabled={locked}
+                  className="btn-ghost text-rose-700"
+                >
+                  Удалить
+                </button>
+              </div>
+            </li>
+          );
+        })}
         {items.length === 0 && (
           <li className="px-4 py-10 text-center text-ink-600">Категорий пока нет</li>
         )}

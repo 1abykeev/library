@@ -1,19 +1,16 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class BorrowCreate(BaseModel):
-    user_id: int
     book_id: int
-
-
-class BorrowUserInfo(BaseModel):
-    id: int
-    full_name: str
-    email: str
-
-    model_config = ConfigDict(from_attributes=True)
+    borrower_name: str = Field(min_length=1, max_length=100)
+    borrower_surname: str = Field(min_length=1, max_length=100)
+    borrower_phone: str = Field(min_length=3, max_length=40)
+    borrower_email: str | None = None
+    borrower_passport: str | None = None
+    note: str | None = None
 
 
 class BorrowBookInfo(BaseModel):
@@ -28,7 +25,12 @@ class BorrowOut(BaseModel):
     id: int
     borrow_date: datetime
     return_date: datetime | None
-    user: BorrowUserInfo
+    borrower_name: str | None
+    borrower_surname: str | None
+    borrower_phone: str | None
+    borrower_email: str | None
+    borrower_passport: str | None
+    note: str | None
     book: BorrowBookInfo
 
     model_config = ConfigDict(from_attributes=True)

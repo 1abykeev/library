@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Shell } from "@/components/Shell";
-import { Book, Borrow, api, mediaUrl } from "@/lib/api";
+import { Book, api, mediaUrl } from "@/lib/api";
 import { useCurrentUser } from "@/lib/auth";
 
 export default function BookDetailPage() {
@@ -23,7 +23,6 @@ function Detail() {
   const { user } = useCurrentUser({ required: true });
   const [book, setBook] = useState<Book | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [working, setWorking] = useState(false);
 
   async function load() {
     try {
@@ -38,22 +37,6 @@ function Detail() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  async function borrow() {
-    if (!user) return;
-    setWorking(true);
-    try {
-      await api<Borrow>("/borrow", {
-        method: "POST",
-        body: { user_id: user.id, book_id: id },
-      });
-      await load();
-    } catch (e: any) {
-      alert(e.message || "Ошибка выдачи");
-    } finally {
-      setWorking(false);
-    }
-  }
 
   async function remove() {
     if (!confirm("Удалить книгу?")) return;
@@ -90,13 +73,6 @@ function Detail() {
                 Читать
               </Link>
             )}
-            <button
-              onClick={borrow}
-              disabled={!book.available || working}
-              className="btn-primary w-full"
-            >
-              {book.available ? (working ? "…" : "Выдать мне") : "Недоступна"}
-            </button>
             {user?.role === "admin" && (
               <>
                 <Link href={`/admin/books/${book.id}`} className="btn-outline w-full">

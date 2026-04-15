@@ -37,6 +37,8 @@ class CategoryService:
         cat = self.repo.get(category_id)
         if not cat:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Категория не найдена")
+        if cat.slug == "free-books":
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Эту категорию нельзя переименовать")
         slug = slugify(name)
         return self.repo.update(cat, name, slug)
 
@@ -44,4 +46,6 @@ class CategoryService:
         cat = self.repo.get(category_id)
         if not cat:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Категория не найдена")
+        if cat.slug == "free-books":
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Эту категорию нельзя удалить")
         self.repo.delete(cat)

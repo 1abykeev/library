@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import { PublicShell } from "@/components/PublicShell";
 import { api, setStoredUser, setToken, User } from "@/lib/api";
 
 type LoginResp = { access_token: string; token_type: string; user: User };
@@ -36,27 +37,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
-      <div className="hidden bg-gradient-to-br from-ink-900 to-ink-600 p-12 text-white md:flex md:flex-col md:justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-white text-sm font-bold text-ink-900">
-            Б
-          </span>
-          <span className="font-display text-lg font-bold">Библиотека</span>
-        </Link>
-        <div>
-          <h2 className="font-display text-4xl font-bold leading-tight">
-            Добро пожаловать обратно.
-          </h2>
-          <p className="mt-3 max-w-sm text-ink-100/80">
-            Войдите, чтобы продолжить чтение и управлять выдачами.
-          </p>
-        </div>
-        <div className="text-xs text-ink-100/60">© Библиотека университета</div>
-      </div>
-
-      <div className="flex items-center justify-center px-6 py-16">
-        <div className="w-full max-w-sm">
+    <PublicShell>
+      <section className="mx-auto flex max-w-md flex-col px-6 py-16">
+        <div className="card p-8">
           <h1 className="font-display text-3xl font-bold">Вход</h1>
           <p className="mt-1 text-sm text-ink-600">
             Введите email и пароль, чтобы продолжить.
@@ -106,7 +89,7 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
-      </div>
-    </div>
+      </section>
+    </PublicShell>
   );
 }

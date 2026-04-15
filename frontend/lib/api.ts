@@ -52,7 +52,12 @@ export type Borrow = {
   id: number;
   borrow_date: string;
   return_date: string | null;
-  user: { id: number; full_name: string; email: string };
+  borrower_name: string | null;
+  borrower_surname: string | null;
+  borrower_phone: string | null;
+  borrower_email: string | null;
+  borrower_passport: string | null;
+  note: string | null;
   book: { id: number; title: string; author: string };
 };
 
