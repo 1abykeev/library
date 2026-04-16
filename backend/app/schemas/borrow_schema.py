@@ -13,6 +13,11 @@ class BorrowCreate(BaseModel):
     note: str | None = None
 
 
+class BorrowReturn(BaseModel):
+    rating: int | None = Field(default=None, ge=1, le=5)
+    review: str | None = None
+
+
 class BorrowBookInfo(BaseModel):
     id: int
     title: str
@@ -31,6 +36,8 @@ class BorrowOut(BaseModel):
     borrower_email: str | None
     borrower_passport: str | None
     note: str | None
+    rating: int | None
+    review: str | None
     book: BorrowBookInfo
 
     model_config = ConfigDict(from_attributes=True)

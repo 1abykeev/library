@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -21,6 +21,9 @@ class Borrow(Base):
     borrower_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     borrower_passport: Mapped[str | None] = mapped_column(String(40), nullable=True)
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    review: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     user = relationship("User", back_populates="borrows")
     book = relationship("Book", back_populates="borrows")

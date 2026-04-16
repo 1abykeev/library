@@ -63,16 +63,16 @@ export default function HomePage() {
         <div className="card grid items-center gap-8 p-10 md:grid-cols-[2fr_1fr]">
           <div>
             <h2 className="font-display text-3xl font-bold">
-              Читатели — присоединяйтесь
+              Приходите в библиотеку
             </h2>
             <p className="mt-2 max-w-lg text-ink-600">
-              Зарегистрируйтесь, чтобы оформлять заявки на книги и получать
-              доступ к полному каталогу.
+              Бесплатные книги доступны онлайн. Остальные издания можно взять
+              у администратора библиотеки — без регистрации на сайте.
             </p>
           </div>
           <div className="flex gap-3 md:justify-end">
-            <Link href="/register" className="btn-accent">Регистрация</Link>
-            <Link href="/login" className="btn-outline">Войти</Link>
+            <Link href="/catalog" className="btn-accent">Открыть каталог</Link>
+            <Link href="/contacts" className="btn-outline">Контакты</Link>
           </div>
         </div>
       </section>

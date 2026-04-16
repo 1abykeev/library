@@ -11,6 +11,7 @@ const links = [
   { href: "/catalog", label: "Каталог" },
   { href: "/free", label: "Бесплатные книги" },
   { href: "/about", label: "О нас" },
+  { href: "/faq", label: "Вопросы" },
   { href: "/contacts", label: "Контакты" },
 ];
 
@@ -49,12 +50,9 @@ export function PublicNavbar() {
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
-            <Link href="/books" className="btn-primary">Панель</Link>
+            <Link href="/admin" className="btn-primary">Панель</Link>
           ) : (
-            <>
-              <Link href="/login" className="btn-ghost">Войти</Link>
-              <Link href="/register" className="btn-primary">Регистрация</Link>
-            </>
+            <Link href="/login" className="btn-primary">Вход для администратора</Link>
           )}
         </div>
       </div>

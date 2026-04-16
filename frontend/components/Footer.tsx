@@ -29,12 +29,12 @@ export function Footer() {
         </div>
         <div>
           <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-600">
-            Аккаунт
+            Помощь
           </div>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/login" className="hover:underline">Войти</Link></li>
-            <li><Link href="/register" className="hover:underline">Регистрация</Link></li>
             <li><Link href="/faq" className="hover:underline">Вопросы</Link></li>
+            <li><Link href="/contacts" className="hover:underline">Контакты</Link></li>
+            <li><Link href="/login" className="hover:underline">Вход (администратор)</Link></li>
           </ul>
         </div>
         <div>

@@ -46,6 +46,16 @@ export type Book = {
   available: boolean;
   category: Category | null;
   created_at: string;
+  avg_rating: number;
+  rating_count: number;
+};
+
+export type BookReview = {
+  borrower_name: string | null;
+  borrower_surname: string | null;
+  rating: number;
+  review: string | null;
+  return_date: string | null;
 };
 
 export type Borrow = {
@@ -58,6 +68,8 @@ export type Borrow = {
   borrower_email: string | null;
   borrower_passport: string | null;
   note: string | null;
+  rating: number | null;
+  review: string | null;
   book: { id: number; title: string; author: string };
 };
 

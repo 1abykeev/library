@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import { Book, mediaUrl } from "@/lib/api";
+import { Stars } from "./Stars";
 
 export function BookCard({ book }: { book: Book }) {
   const cover = mediaUrl(book.cover_url);
@@ -35,6 +36,13 @@ export function BookCard({ book }: { book: Book }) {
           {book.title}
         </h3>
         <p className="text-sm text-ink-600">{book.author}</p>
+        {book.rating_count > 0 ? (
+          <div className="pt-1">
+            <Stars value={book.avg_rating} count={book.rating_count} size="sm" />
+          </div>
+        ) : (
+          <div className="pt-1 text-xs text-ink-600">Без оценок</div>
+        )}
         <div className="mt-auto flex items-center justify-between pt-2 text-xs text-ink-600">
           <span>{book.published_year}</span>
           {book.category && (

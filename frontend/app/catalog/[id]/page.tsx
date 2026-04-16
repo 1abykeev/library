@@ -5,14 +5,19 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { PublicShell } from "@/components/PublicShell";
-import { Book, api, mediaUrl } from "@/lib/api";
+import { Stars } from "@/components/Stars";
+import { Book, BookReview, api, mediaUrl } from "@/lib/api";
 
 export default function PublicBookPage() {
   const params = useParams<{ id: string }>();
   const [book, setBook] = useState<Book | null>(null);
+  const [reviews, setReviews] = useState<BookReview[]>([]);
 
   useEffect(() => {
     api<Book>(`/books/${params.id}`, { auth: false }).then(setBook).catch(() => {});
+    api<BookReview[]>(`/stats/books/${params.id}/reviews`, { auth: false })
+      .then(setReviews)
+      .catch(() => {});
   }, [params.id]);
 
   if (!book) {
@@ -74,6 +79,9 @@ export default function PublicBookPage() {
               {book.title}
             </h1>
             <p className="mt-2 text-lg text-ink-600">{book.author}</p>
+            <div className="mt-3">
+              <Stars value={book.avg_rating} count={book.rating_count} size="lg" />
+            </div>
             <div className="mt-6 grid max-w-sm grid-cols-2 gap-4 rounded-2xl bg-white p-5 shadow-card">
               <div>
                 <div className="text-xs text-ink-600">Год</div>
@@ -92,6 +100,29 @@ export default function PublicBookPage() {
                 </p>
               </div>
             )}
+
+            <div className="mt-10">
+              <h2 className="font-display text-xl font-bold">Отзывы читателей</h2>
+              {reviews.length === 0 ? (
+                <p className="mt-2 text-ink-600">Пока никто не оставил отзыв.</p>
+              ) : (
+                <ul className="mt-4 space-y-4">
+                  {reviews.map((r, i) => (
+                    <li key={i} className="card p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium">
+                          {r.borrower_name} {r.borrower_surname}
+                        </div>
+                        <Stars value={r.rating} size="sm" />
+                      </div>
+                      {r.review && (
+                        <p className="mt-2 text-sm text-ink-600">{r.review}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </section>

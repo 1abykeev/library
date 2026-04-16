@@ -10,12 +10,11 @@ export function Navbar({ user }: { user: User | null }) {
   const router = useRouter();
 
   const links = [
+    { href: "/admin", label: "Панель" },
     { href: "/books", label: "Каталог" },
     { href: "/borrow", label: "Выдачи" },
+    { href: "/admin/categories", label: "Категории" },
   ];
-  if (user?.role === "admin") {
-    links.push({ href: "/admin/categories", label: "Категории" });
-  }
 
   function handleLogout() {
     clearToken();

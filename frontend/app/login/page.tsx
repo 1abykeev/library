@@ -28,7 +28,7 @@ export default function LoginPage() {
       });
       setToken(data.access_token);
       setStoredUser(data.user);
-      router.replace("/books");
+      router.replace("/admin");
     } catch (err: any) {
       setError(err.message || "Ошибка входа");
     } finally {

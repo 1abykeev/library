@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.dependencies.auth_dependencies import require_admin
 from app.models.user_model import User
-from app.schemas.borrow_schema import BorrowCreate, BorrowOut
+from app.schemas.borrow_schema import BorrowCreate, BorrowOut, BorrowReturn
 from app.services.borrow_service import BorrowService
 
 router = APIRouter(prefix="/borrow", tags=["borrow"])
@@ -21,5 +21,5 @@ def create_borrow(data: BorrowCreate, admin: User = Depends(require_admin), db: 
 
 
 @router.post("/{borrow_id}/return", response_model=BorrowOut, dependencies=[Depends(require_admin)])
-def return_book(borrow_id: int, db: Session = Depends(get_db)):
-    return BorrowService(db).return_book(borrow_id)
+def return_book(borrow_id: int, data: BorrowReturn, db: Session = Depends(get_db)):
+    return BorrowService(db).return_book(borrow_id, data)

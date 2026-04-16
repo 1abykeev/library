@@ -33,5 +33,15 @@ class BookOut(BaseModel):
     available: bool
     category: CategoryOut | None
     created_at: datetime
+    avg_rating: float = 0.0
+    rating_count: int = 0
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class BookReview(BaseModel):
+    borrower_name: str | None
+    borrower_surname: str | None
+    rating: int
+    review: str | None
+    return_date: datetime | None

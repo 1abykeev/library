@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Shell } from "@/components/Shell";
+import { Stars, StarInput } from "@/components/Stars";
 import { Book, Borrow, api } from "@/lib/api";
 
 export default function BorrowPage() {
@@ -17,6 +18,7 @@ function Content() {
   const [rows, setRows] = useState<Borrow[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [returning, setReturning] = useState<Borrow | null>(null);
 
   async function load() {
     const r = await api<Borrow[]>("/borrow");
@@ -28,18 +30,13 @@ function Content() {
     api<Book[]>("/books").then(setBooks).catch(() => {});
   }, []);
 
-  async function returnBook(id: number) {
-    await api(`/borrow/${id}/return`, { method: "POST" });
-    await load();
-  }
-
   return (
     <div>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-4xl font-bold">Выдачи</h1>
           <p className="mt-1 text-ink-600">
-            Журнал выдач книг читателям, записанным администратором.
+            Журнал выдач книг. Оценка ставится при возврате.
           </p>
         </div>
         <button onClick={() => setShowForm((s) => !s)} className="btn-accent">
@@ -59,7 +56,7 @@ function Content() {
 
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px]">
+          <table className="w-full min-w-[1000px]">
             <thead className="bg-ink-50 text-left text-xs uppercase tracking-wide text-ink-600">
               <tr>
                 <th className="px-4 py-3">ID</th>
@@ -68,6 +65,7 @@ function Content() {
                 <th className="px-4 py-3">Книга</th>
                 <th className="px-4 py-3">Выдана</th>
                 <th className="px-4 py-3">Возврат</th>
+                <th className="px-4 py-3">Оценка</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -76,13 +74,9 @@ function Content() {
                 <tr key={b.id} className="text-sm align-top">
                   <td className="px-4 py-3 font-mono text-ink-600">#{b.id}</td>
                   <td className="px-4 py-3">
-                    <div className="font-medium">
-                      {b.borrower_name} {b.borrower_surname}
-                    </div>
+                    <div className="font-medium">{b.borrower_name} {b.borrower_surname}</div>
                     {b.borrower_passport && (
-                      <div className="text-xs text-ink-600">
-                        Паспорт: {b.borrower_passport}
-                      </div>
+                      <div className="text-xs text-ink-600">Паспорт: {b.borrower_passport}</div>
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -103,9 +97,26 @@ function Content() {
                       <span className="badge-green">Активна</span>
                     )}
                   </td>
+                  <td className="px-4 py-3">
+                    {b.rating ? (
+                      <div>
+                        <Stars value={b.rating} size="sm" />
+                        {b.review && (
+                          <div className="mt-1 max-w-xs text-xs text-ink-600 line-clamp-2">
+                            {b.review}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-ink-600">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-right">
                     {!b.return_date && (
-                      <button onClick={() => returnBook(b.id)} className="btn-outline">
+                      <button
+                        onClick={() => setReturning(b)}
+                        className="btn-outline"
+                      >
                         Вернуть
                       </button>
                     )}
@@ -114,7 +125,7 @@ function Content() {
               ))}
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-ink-600">
+                  <td colSpan={8} className="px-4 py-12 text-center text-ink-600">
                     Записей о выдачах нет
                   </td>
                 </tr>
@@ -122,6 +133,100 @@ function Content() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {returning && (
+        <ReturnModal
+          borrow={returning}
+          onClose={() => setReturning(null)}
+          onDone={() => {
+            setReturning(null);
+            load();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function ReturnModal({
+  borrow,
+  onClose,
+  onDone,
+}: {
+  borrow: Borrow;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await api(`/borrow/${borrow.id}/return`, {
+        method: "POST",
+        body: {
+          rating: rating || null,
+          review: review || null,
+        },
+      });
+      onDone();
+    } catch (e: any) {
+      setError(e.message || "Ошибка");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink-900/40 p-4" onClick={onClose}>
+      <div
+        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="font-display text-2xl font-bold">Возврат книги</h2>
+        <p className="mt-1 text-sm text-ink-600">
+          «{borrow.book.title}» — {borrow.borrower_name} {borrow.borrower_surname}
+        </p>
+        <p className="mt-4 text-sm text-ink-600">
+          Спросите читателя, как ему книга, и поставьте оценку:
+        </p>
+        <form onSubmit={submit} className="mt-4 space-y-4">
+          <div className="flex flex-col items-center gap-2 rounded-2xl bg-ink-50 p-5">
+            <StarInput value={rating} onChange={setRating} />
+            <div className="text-xs text-ink-600">
+              {rating === 0 ? "Без оценки" : `${rating} из 5`}
+            </div>
+          </div>
+          <label className="block">
+            <span className="mb-1 block text-sm font-medium">Отзыв (опционально)</span>
+            <textarea
+              rows={3}
+              className="input"
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              placeholder="Слова читателя о книге…"
+            />
+          </label>
+          {error && (
+            <div className="rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-700">
+              {error}
+            </div>
+          )}
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={onClose} className="btn-outline">
+              Отмена
+            </button>
+            <button disabled={loading} className="btn-primary">
+              {loading ? "…" : "Подтвердить возврат"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

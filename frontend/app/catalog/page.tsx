@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { PublicShell } from "@/components/PublicShell";
+import { Stars } from "@/components/Stars";
 import { Book, Category, api, mediaUrl } from "@/lib/api";
 
 export default function PublicCatalog() {
@@ -114,6 +115,11 @@ export default function PublicCatalog() {
                       {b.title}
                     </h3>
                     <p className="text-sm text-ink-600">{b.author}</p>
+                    {b.rating_count > 0 && (
+                      <div className="pt-1">
+                        <Stars value={b.avg_rating} count={b.rating_count} size="sm" />
+                      </div>
+                    )}
                     <div className="mt-auto flex items-center justify-between pt-2 text-xs text-ink-600">
                       <span>{b.published_year}</span>
                       {b.category && <span className="badge-gray">{b.category.name}</span>}

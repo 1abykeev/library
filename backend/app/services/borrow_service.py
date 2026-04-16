@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.models.borrow_model import Borrow
 from app.repositories.book_repository import BookRepository
 from app.repositories.borrow_repository import BorrowRepository
-from app.schemas.borrow_schema import BorrowCreate
+from app.schemas.borrow_schema import BorrowCreate, BorrowReturn
 
 
 class BorrowService:
@@ -42,13 +42,15 @@ class BorrowService:
         self.db.refresh(b)
         return b
 
-    def return_book(self, borrow_id: int):
+    def return_book(self, borrow_id: int, data: BorrowReturn):
         borrow = self.borrow_repo.get(borrow_id)
         if not borrow:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Запись о выдаче не найдена")
         if borrow.return_date is not None:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "Книга уже возвращена")
         borrow.return_date = datetime.now(timezone.utc)
+        borrow.rating = data.rating
+        borrow.review = data.review
         book = self.book_repo.get(borrow.book_id)
         if book:
             book.available = True

@@ -11,15 +11,18 @@ class AuthService:
         self.repo = UserRepository(db)
 
     def register(self, data: UserRegister):
+        if self.repo.count() > 0:
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                "Регистрация закрыта. В системе уже есть администратор.",
+            )
         if self.repo.get_by_email(data.email):
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "Пользователь с таким email уже существует")
-        # first user becomes admin
-        role = "admin" if self.repo.count() == 0 else "user"
         user = self.repo.create(
             full_name=data.full_name,
             email=data.email,
             password_hash=hash_password(data.password),
-            role=role,
+            role="admin",
         )
         return user
 
