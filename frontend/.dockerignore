@@ -1,0 +1,26 @@
+# Dependencies & build output
+node_modules/
+.next/
+out/
+
+# Secrets & local config
+.env
+.env.*
+!.env.example
+
+# Version control & IDE
+.git/
+.gitignore
+.gitattributes
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
